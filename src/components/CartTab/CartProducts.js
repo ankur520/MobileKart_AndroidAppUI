@@ -1,7 +1,8 @@
-import {StyleSheet, Text, View, Image, FlatList} from 'react-native';
+import {StyleSheet, Text, View, Image, FlatList, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {windowWidth} from '../../utils/Dimensions';
 import {Button} from 'react-native-paper';
+import axios from 'axios';
 
 // icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -19,21 +20,79 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-import ErrorAndLoading from '../ErrorAndLoading';
+import ErrorAndLoading from '../ErrorAndLoader';
+
+import {backendApis} from '../../utils/APIS';
+
+import {deleteCartItemByUserIdAsync} from '../../Redux/slice/CartSlice';
 
 import {
   calculateDelivery,
   calculatePrice,
   formatProductName,
 } from '../../utils/calculateFunctions';
+import CartQty from './CartQty';
 
-const CartProduct = ({apiData}) => {
-  // console.log("apiData" , apiData.data.cartFullArray )
-  // orderPlacedStatus
+import {useSelector, useDispatch} from 'react-redux';
+
+import {fetchCartByUserIdAsync} from '../../Redux/slice/CartSlice';
+import {addItemInWishListAsync} from '../../Redux/slice/WishListSlice';
+
+const CartProduct = ({apiData, userId}) => {
+  const dispatch = useDispatch();
+  const [cartIsLoading, setcartIsLoading] = useState(false);
+
+  const getCartFromRedux = useSelector(state => state.carts);
+
+  const alert = msg => {
+    Alert.alert(msg);
+  };
+
+  const addProductInWishlist = async (productId, userId) => {
+    dispatch(
+      addItemInWishListAsync({
+        productId: productId,
+        userId: userId,
+        alert: alert,
+      }),
+    );
+  };
+
+  const deleteProductFromCart = (userId, cartId) => {
+    dispatch(
+      deleteCartItemByUserIdAsync({
+        userId: userId,
+        cartId: cartId,
+      }),
+    );
+
+    dispatch(fetchCartByUserIdAsync(userId));
+  };
+
   return (
     <>
-     
-     <ErrorAndLoading isError={apiData.isError} isLoader={apiData.isLoader} />
+      {/* <ErrorAndLoading isError={apiData.isError} isLoader={apiData.isLoader} /> */}
+
+      {apiData.isLoader === false ? (
+        apiData.data.msg === 'Cart is Empty' ? (
+          <Text
+            style={{
+              color: 'red',
+              fontSize: 20,
+              fontWeight: 600,
+              textAlign: 'center',
+            }}>
+            Cart is Empty
+          </Text>
+        ) : (
+          ''
+        )
+      ) : (
+        <ErrorAndLoading
+          isError={apiData.isError}
+          isLoader={apiData.isLoader}
+        />
+      )}
 
       <FlatList
         data={apiData.data.cartFullArray}
@@ -60,7 +119,12 @@ const CartProduct = ({apiData}) => {
                     />
 
                     <View>
-                      <Text> Qty - {item.qty} </Text>
+                      <CartQty
+                        qty={item.qty}
+                        cartId={item.id}
+                        maxQty={item.productId.totalUnits}
+                        userId={userId}
+                      />
                     </View>
                   </View>
 
@@ -154,8 +218,9 @@ const CartProduct = ({apiData}) => {
                           color: '#228b22',
                           fontWeight: '500',
                         }}>
-                        {' '}
-                        3 Offers Applied{' '}
+                        {item.productId.taxClass.length > 0
+                          ? '+' + item.productId.taxClass
+                          : 'Tax Free Product'}
                       </Text>
                       <Text
                         style={{
@@ -164,7 +229,6 @@ const CartProduct = ({apiData}) => {
                           fontWeight: '500',
                         }}>
                         {' '}
-                        10 Offers Available{' '}
                       </Text>
                     </View>
                   </View>
@@ -209,12 +273,23 @@ const CartProduct = ({apiData}) => {
                       justifyContent: 'space-around',
                     },
                   ]}>
-                  <Button>
+                  {/* <Button onPress={() => deleteCartItem(userId, item.id)}>
+                    {' '}
+                    <AntDesign name="delete" size={15} color="#28282B" />{' '}
+                    <Text style={{color: '#28282B', fontSize: 15}}>Remove</Text>{' '}
+                  </Button> */}
+
+                  <Button
+                    onPress={() => deleteProductFromCart(userId, item.id)}>
                     {' '}
                     <AntDesign name="delete" size={15} color="#28282B" />{' '}
                     <Text style={{color: '#28282B', fontSize: 15}}>Remove</Text>{' '}
                   </Button>
-                  <Button>
+
+                  <Button
+                    onPress={() =>
+                      addProductInWishlist(item.productId.id, userId)
+                    }>
                     {' '}
                     <MaterialIcons
                       name="save-alt"
@@ -225,7 +300,7 @@ const CartProduct = ({apiData}) => {
                       Save for later
                     </Text>{' '}
                   </Button>
-                  <Button>
+                  <Button onPress={() => Alert.alert('.')}>
                     {' '}
                     <MaterialCommunityIcons
                       name="lightning-bolt-outline"

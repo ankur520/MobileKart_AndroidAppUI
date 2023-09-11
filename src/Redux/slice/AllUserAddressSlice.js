@@ -5,34 +5,36 @@ import {backendApis} from '../../utils/APIS';
 const initialState = {data: [], isLoader: false, isError: false};
 
 // First, create the thunk
-export const fetchAllProducts = createAsyncThunk(
-  'products/allproducts',
-  async () => {
-    const response = await axios.get(backendApis.vendorApi.addproduct);
+export const allAddressAsync = createAsyncThunk(
+  'allAddress/address',
+  async userId => {
+    const sessionUrl = backendApis.userApi.add_addressByUserId + userId + '/';
+
+    const response = await axios.get(sessionUrl);
     // console.log(response.data)
     return response.data;
   },
 );
 
-const allProductsSlice = createSlice({
-  name: 'products',
+const allUserAddressSlice = createSlice({
+  name: 'allAddress',
   initialState,
 
   extraReducers: builder => {
-    builder.addCase(fetchAllProducts.pending, (state, action) => {
+    builder.addCase(allAddressAsync.pending, (state, action) => {
       state.isLoader = true;
     });
 
-    builder.addCase(fetchAllProducts.fulfilled, (state, action) => {
+    builder.addCase(allAddressAsync.fulfilled, (state, action) => {
       state.isLoader = false;
       state.data = action.payload;
     });
 
-    builder.addCase(fetchAllProducts.rejected, (state, action) => {
+    builder.addCase(allAddressAsync.rejected, (state, action) => {
       state.isLoader = false;
       state.isError = true;
     });
   },
 });
 
-export default allProductsSlice.reducer;
+export default allUserAddressSlice.reducer;

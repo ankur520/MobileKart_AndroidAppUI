@@ -55,7 +55,7 @@ const SideBar = () => {
           </Text>
 
           <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>
-            singhajaypratap606@gmail.com
+            apsinghjobs@gmail.com
           </Text>
         </View>
 
@@ -66,6 +66,10 @@ const SideBar = () => {
           ]}>
           <Text style={{fontSize: 13, color: 'black', fontWeight: '400'}}>
             website -
+          </Text>
+
+          <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>
+            ajaypratapsingh.netlify.com
           </Text>
 
           <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>
@@ -105,15 +109,11 @@ const SideBar = () => {
           </Text>
 
           <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>
-            - Block chain Development
+            - Rest Apis Development
           </Text>
 
           <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>
-            - Android Ui Designing
-          </Text>
-
-          <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>
-            - IOS Ui Designing
+            - Mobile App Ui Development
           </Text>
         </View>
       </View>

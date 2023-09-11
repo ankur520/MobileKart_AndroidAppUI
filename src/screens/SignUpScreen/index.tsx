@@ -1,228 +1,318 @@
-import { StyleSheet, Text, View, Dimensions, } from 'react-native';
-import React, { useState } from 'react';
-import { TextInput, Button } from 'react-native-paper';
+import {StyleSheet, Text, View, Dimensions, Alert} from 'react-native';
+import React, {useState} from 'react';
+import {TextInput, Button} from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
-// Formik 
 
+import ProgressDialog from '../../components/ProgressDialog';
 
 let ScreenHeight = Dimensions.get('window').height;
 
-const SignUpScreen = ({ navigation  }  ) => {
-  // console.log(ScreenHeight)
+// Formik
+import {Formik, Form, Field} from 'formik';
+import * as Yup from 'yup';
 
-  const [firstName, setfirstName] = useState('');
-  const [firstNameError, setfirstNameError] = useState('');
+// redux
+import {userSignUpAsync} from '../../Redux/slice/UserLoginSlice';
+import {useSelector, useDispatch} from 'react-redux';
 
-  const [lastName, setlastName] = useState('');
-  const [lastNameError, setlastNameError] = useState('');
+import {SignupSchema} from '../../utils/FormikSchema';
+import ErrorAndLoading from '../../components/ErrorAndLoader';
 
-  const [password, setpassword] = useState('');
-  const [email, setemail] = useState('');
-  const [emailError, setemailError] = useState('');
+const SignUpScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const [signUpErrorMsg, setsignUpErrorMsg] = useState('');
 
+  const reduxUserSignUp = useSelector(state => state.userLogin);
 
-    return (
+  // console.log("reduxUserSignUp -> ", reduxUserSignUp)
 
-      <View style={styles.root}>
-        <View style={styles.header}>
-          <Text
-            style={styles.header_One}
-            onPress={() => navigation.navigate('WelcomeScreen')}>
-            <Entypo name="cross" size={30} color="#fff" />
-          </Text>
-          <Text style={styles.header_Two}>Sign Up</Text>
-        </View>
+  // console.log(reduxUserSignUp.data)
 
-        <View style={{ marginTop: -200, paddingHorizontal: 15 }}>
-          <View>
-            <View style={styles.section}>
-              <View style={styles.textBox}>
-                <Text style={styles.textBox_One}> Please Sign Up </Text>
-              </View>
+  const alert = msg => {
+    Alert.alert(msg);
+  };
 
-              <View style={styles.inputBox}>
+  const navigate = msg => {
+    navigation.navigate(msg);
+  };
 
+  const onSignUpSubmitBtn = values => {
+    let firstName = values.fname;
+    let LastName = values.lname;
+    let Eemail = values.email;
+    let Ppassword = values.password;
 
-               <TextInput
-                  mode="outlined"
-                  outlineColor="#06388a"
-                  textColor="black"
-                  label="First Name"
-                  value={firstName}
-                  // onEndEditing={validateFName}
-                  onChangeText={firstName => {setfirstName(firstName) }  }
-                  style={{ marginBottom: 10 }}
-                />
+    // console.log("its working ", firstName, LastName, Eemail, Ppassword)
 
-                <TextInput
-                  mode="outlined"
-                  outlineColor="#06388a"
-                  textColor="black"
-                  label="Last Name"
-                  value={lastName}
-                  onChangeText={lastName => setlastName(lastName)}
-                  style={{ marginBottom: 10 }}
-                />
-
-                <TextInput
-                  mode="outlined"
-                  outlineColor="#06388a"
-                  textColor="black"
-                  label="Your Email Address"
-                  
-                  value={email}
-                  onChangeText={email => setemail(email)}
-                  style={{ marginBottom: 10 }}
-                />
-
-                <TextInput
-                  mode="outlined"
-                  outlineColor="#06388a"
-                  textColor="black"
-                  label="Your Password"
-                  value={password}
-                  secureTextEntry={true}
-                  onChangeText={password => setpassword(password)}
-                /> 
-
-
-              </View>
-
-
-
-
-
-              <Text style={styles.terms}>
-                {' '}
-                By Continuing, you agree to
-                <Text style={{ color: '#2873F0', fontWeight: 'bold' }}>
-                  {' '}
-                  Mobile Kart's Terms{' '}
-                </Text>
-                of Use and
-                <Text style={{ color: '#2873F0', fontWeight: 'bold' }}>
-                  {' '}
-                  Privacy Policy{' '}
-                </Text>
-
-              </Text>
-
-              <View style={{ display: "flex", flexDirection: "row", marginTop: 20, justifyContent: "center" }} >
-
-                <Text style={{
-
-                  fontSize: 15,
-                  color: '#1a1301',
-                  fontWeight: '600',
-                  marginRight: 10,
-                }}>
-                  Already User
-                </Text>
-
-                <Text onPress={() => navigation.navigate("Login")} style={{ fontSize: 17, marginRight: 0, color: '#2873F0', fontWeight: 'bold', textDecorationLine: "underline" }} >
-                  Click Here
-                </Text>
-              </View>
-
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.buttonBox}>
-
-          {/* <Button
-          style={{ borderRadius: 0 }}
-          dark={true}
-          buttonColor="#06388a"
-          textColor="#fff"
-          onPress={() => console.log("2332") ) }>
-          Sign Up
-        </Button> */}
-
-        </View>
-      </View>
+    dispatch(
+      userSignUpAsync({
+        firstName: firstName,
+        LastName: LastName,
+        Eemail: Eemail,
+        Ppassword: Ppassword,
+        alert: alert,
+        navigate: navigate,
+      }),
     );
   };
 
-  export default SignUpScreen;
+  return (
+    <Formik
+      initialValues={{
+        fname: '',
+        lname: '',
+        email: '',
+        password: '',
+      }}
+      validationSchema={SignupSchema}
+      onSubmit={values => onSignUpSubmitBtn(values)}>
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        setFieldTouched,
+        isValid,
+        handleSubmit,
+      }) => (
+        <View>
+          <View style={styles.root}>
+            <View style={styles.header}>
+              <Text
+                style={styles.header_One}
+                onPress={() => navigation.navigate('WelcomeScreen')}>
+                <Entypo name="cross" size={30} color="#fff" />
+              </Text>
+              <Text style={styles.header_Two}>Sign Up</Text>
+            </View>
 
-  const styles = StyleSheet.create({
-    root: {
-      backgroundColor: '#fff',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      height: ScreenHeight - 23,
-    },
+            <View style={{marginTop: -200, paddingHorizontal: 15}}>
+              <View>
+                <View style={styles.section}>
+                  <View
+                    style={[
+                      styles.textBox,
+                      {
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                      },
+                    ]}>
+                    <Text style={styles.textBox_One}> Please Sign Up </Text>
+                    <ErrorAndLoading
+                      isError={false}
+                      isLoader={reduxUserSignUp.isLoader}
+                    />
+                  </View>
 
-    header: {
-      backgroundColor: '#2873F0',
-      padding: 10,
-      display: 'flex',
-      flexDirection: 'row',
-    },
+                  <View style={styles.inputBox}>
+                    <TextInput
+                      mode="outlined"
+                      outlineColor="#06388a"
+                      textColor="black"
+                      label="First Name"
+                      value={values.fname}
+                      onChangeText={handleChange('fname')}
+                      onBlur={() => setFieldTouched('fname')}
+                      style={{marginBottom: 10}}
+                    />
+                    {touched.fname && errors.fname && (
+                      <Text style={styles.errorTxt}> {errors.fname} </Text>
+                    )}
 
-    header_One: {
-      color: '#fff',
-      fontSize: 20,
-      fontWeight: '400',
-      marginRight: 20,
-    },
+                    <TextInput
+                      mode="outlined"
+                      outlineColor="#06388a"
+                      textColor="black"
+                      label="Last Name"
+                      value={values.lname}
+                      onChangeText={handleChange('lname')}
+                      onBlur={() => setFieldTouched('lname')}
+                      style={{marginBottom: 10}}
+                    />
+                    {touched.lname && errors.lname && (
+                      <Text style={styles.errorTxt}> {errors.lname} </Text>
+                    )}
 
-    header_Two: {
-      color: '#fff',
-      fontSize: 20,
-      fontWeight: '400',
-    },
+                    <TextInput
+                      mode="outlined"
+                      outlineColor="#06388a"
+                      textColor="black"
+                      label="Your Email Address"
+                      value={values.email}
+                      onChangeText={handleChange('email')}
+                      onBlur={() => setFieldTouched('email')}
+                      style={{marginBottom: 10}}
+                      keyboardType={'email-address'}
+                    />
+                    {touched.email && errors.email && (
+                      <Text style={styles.errorTxt}> {errors.email} </Text>
+                    )}
 
-    section: {},
+                    <TextInput
+                      mode="outlined"
+                      outlineColor="#06388a"
+                      textColor="black"
+                      label="Your Password"
+                      value={values.password}
+                      secureTextEntry={true}
+                      onChangeText={handleChange('password')}
+                      onBlur={() => setFieldTouched('password')}
+                    />
+                    {touched.password && errors.password && (
+                      <Text style={styles.errorTxt}> {errors.password} </Text>
+                    )}
+                  </View>
 
-    textBox: {
-      marginTop: 40,
-    },
+                  <Text style={styles.terms}>
+                    {' '}
+                    By Continuing, you agree to
+                    <Text style={{color: '#2873F0', fontWeight: 'bold'}}>
+                      {' '}
+                      Mobile Kart's Terms{' '}
+                    </Text>
+                    of Use and
+                    <Text style={{color: '#2873F0', fontWeight: 'bold'}}>
+                      {' '}
+                      Privacy Policy{' '}
+                    </Text>
+                  </Text>
 
-    textBox_One: {
-      fontSize: 20,
-      fontWeight: '700',
-      color: 'black',
-    },
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      marginTop: 20,
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: '#1a1301',
+                        fontWeight: '600',
+                        marginRight: 10,
+                      }}>
+                      Already User
+                    </Text>
 
-    textBox_Two: {
-      marginTop: 20,
-      fontSize: 15,
-      fontWeight: '400',
-      color: '#140f01',
-    },
+                    <Text
+                      onPress={() => navigation.navigate('Login')}
+                      style={{
+                        fontSize: 17,
+                        marginRight: 0,
+                        color: '#2873F0',
+                        fontWeight: 'bold',
+                        textDecorationLine: 'underline',
+                      }}>
+                      Click Here
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
 
-    inputBox: {
-      marginTop: 20,
-    },
+            <View style={styles.buttonBox}>
+              <Button
+                onPress={handleSubmit}
+                style={{borderRadius: 0}}
+                dark={true}
+                disabled={!isValid}
+                buttonColor="#06388a"
+                textColor="#fff">
+                Sign Up
+              </Button>
+            </View>
+          </View>
+        </View>
+      )}
+    </Formik>
+  );
+};
 
-    terms: {
-      marginTop: 40,
-      fontSize: 13,
-      color: '#1a1301',
-      fontWeight: '600',
-    },
+export default SignUpScreen;
 
-    buttonBox: {
-      paddingHorizontal: 15,
-      paddingVertical: 10,
-      borderWidth: 1,
-      borderColor: '#ddd',
-      //  backgroundColor: 'red',
+const styles = StyleSheet.create({
+  root: {
+    backgroundColor: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: ScreenHeight - 23,
+  },
 
-      // shadowColor: 'orange',
-      // shadowOffset: {width: -150, height: -100},
-      // shadowOpacity: 0.5,
-    },
+  header: {
+    backgroundColor: '#2873F0',
+    padding: 10,
+    display: 'flex',
+    flexDirection: 'row',
+  },
 
-    input: {
-      height: 40,
-      borderWidth: 1,
-      marginBottom: 12,
-      borderColor: 'gray',
-      paddingHorizontal: 8,
-    }
+  header_One: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '400',
+    marginRight: 20,
+  },
 
-  })
+  header_Two: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '400',
+  },
+
+  section: {},
+
+  textBox: {
+    marginTop: 40,
+  },
+
+  textBox_One: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: 'black',
+  },
+
+  textBox_Two: {
+    marginTop: 20,
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#140f01',
+  },
+
+  inputBox: {
+    marginTop: 30,
+  },
+
+  terms: {
+    marginTop: 40,
+    fontSize: 13,
+    color: '#1a1301',
+    fontWeight: '600',
+  },
+
+  buttonBox: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    //  backgroundColor: 'red',
+
+    // shadowColor: 'orange',
+    // shadowOffset: {width: -150, height: -100},
+    // shadowOpacity: 0.5,
+  },
+
+  input: {
+    height: 40,
+    borderWidth: 1,
+    marginBottom: 12,
+    borderColor: 'gray',
+    paddingHorizontal: 8,
+  },
+
+  errorTxt: {
+    fontSize: 10,
+    color: 'red',
+    fontWeight: '500',
+  },
+});

@@ -1,22 +1,49 @@
-import {StyleSheet, Text, View, FlatList, Image} from 'react-native';
+import {StyleSheet, Text, View, FlatList, Image, Alert} from 'react-native';
 import React from 'react';
 import {Button} from 'react-native-paper';
 import {ActivityIndicator, MD2Colors} from 'react-native-paper';
-import ErrorAndLoading from '../ErrorAndLoading';
+import ErrorAndLoading from '../ErrorAndLoader';
+import {backendApis} from '../../utils/APIS';
+import axios from 'axios';
+import {useSelector, useDispatch} from 'react-redux';
 
 import {
   calculateDelivery,
   calculatePrice,
   formatProductName,
 } from '../../utils/calculateFunctions';
+import {addProductInCartAsync} from '../../Redux/slice/CartSlice';
+import {fetchCartByUserIdAsync} from '../../Redux/slice/CartSlice';
 
-const ProductCarousel = ({apiData}) => {
+const ProductCarousel = ({apiData, userId}) => {
+  const dispatch = useDispatch();
+
+  const alert = msg => {
+    Alert.alert(msg);
+  };
+
+  const addProductInCartOnPress = (productId, userId) => {
+    if (userId !== '') {
+      dispatch(
+        addProductInCartAsync({
+          productId: productId,
+          userId: userId,
+          alert: alert,
+        }),
+      );
+
+      dispatch(fetchCartByUserIdAsync(userId));
+    } else {
+      Alert.alert('Alert', 'Please Login First');
+    }
+  };
+
   return (
     <>
       <ErrorAndLoading isError={apiData.isError} isLoader={apiData.isLoader} />
 
       <FlatList
-        data={apiData.data.cartFullArray}
+        data={apiData.data.getAllProducts}
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({item}) => {
@@ -36,7 +63,7 @@ const ProductCarousel = ({apiData}) => {
                 style={{width: 140, height: 140, objectFit: 'contain'}}
                 resizeMode="contain"
                 source={{
-                  uri: `${item.productId.image1}`,
+                  uri: `${item.image1}`,
                 }}
               />
 
@@ -48,7 +75,7 @@ const ProductCarousel = ({apiData}) => {
                     color: '#36454F',
                     fontWeight: '600',
                   }}>
-                  {formatProductName(item.productId.name)}
+                  {formatProductName(item.name)}
                 </Text>
 
                 <View style={[styles.dFlex, {marginTop: 5}]}>
@@ -59,10 +86,7 @@ const ProductCarousel = ({apiData}) => {
                       fontWeight: '500',
                     }}>
                     &#8377;
-                    {calculatePrice(
-                      item.productId.mrp,
-                      item.productId.discountPercent,
-                    )}
+                    {calculatePrice(item.mrp, item.discountPercent)}
                   </Text>
                   <Text
                     style={{
@@ -73,7 +97,7 @@ const ProductCarousel = ({apiData}) => {
                       textDecorationLine: 'line-through',
                       textDecorationColor: '#5e5c5c',
                     }}>
-                    &#8377; {item.productId.mrp}
+                    &#8377; {item.mrp}
                   </Text>
                 </View>
 
@@ -84,11 +108,12 @@ const ProductCarousel = ({apiData}) => {
                     fontWeight: '600',
                     marginTop: 5,
                   }}>
-                  {item.productId.discountPercent}% Off
+                  {item.discountPercent}% Off
                 </Text>
               </View>
 
               <Button
+                onPress={() => addProductInCartOnPress(item.id, userId)}
                 style={{
                   borderWidth: 1,
                   borderColor: '#ddd',

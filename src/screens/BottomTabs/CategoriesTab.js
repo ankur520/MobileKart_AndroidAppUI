@@ -27,6 +27,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 // other imports
 import {windowWidth} from '../../utils/Dimensions';
+import {Link} from '@react-navigation/native';
 
 const CategoriesTabs = () => {
   return (
@@ -86,98 +87,144 @@ const CategoriesTabs = () => {
                 paddingHorizontal: 10,
                 display: 'flex',
                 flexDirection: 'row',
+                justifyContent: 'space-between',
               }}>
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={[styles.CatImage, {objectFit: 'contain'}]}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCUX5Row2QfumC7m_1dDV0zsjMPHhkkVPfYg&usqp=CAU',
-                    }}
-                  />
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Apple',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={[styles.CatImage, {objectFit: 'contain'}]}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCUX5Row2QfumC7m_1dDV0zsjMPHhkkVPfYg&usqp=CAU',
+                      }}
+                    />
+                  </View>
+
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Apple{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Apple{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Samsung',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://images.samsung.com/is/image/samsung/assets/in/about-us/brand/logo/mo/256_144_4.png?$512_N_PNG$',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://images.samsung.com/is/image/samsung/assets/in/about-us/brand/logo/mo/256_144_4.png?$512_N_PNG$',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Samsung{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Samsung{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Nokia',
+                  },
+                }}></Link>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://cdn.wallpapersafari.com/61/77/rmb5aB.jpg',
-                    }}
-                  />
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Apple',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://cdn.wallpapersafari.com/61/77/rmb5aB.jpg',
+                      }}
+                    />
+                  </View>
+
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Nokia{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Nokia{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Xiaomi',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://static.vecteezy.com/system/resources/previews/020/927/146/original/xiaomi-brand-logo-phone-symbol-with-name-white-design-chinese-mobile-illustration-with-orange-background-free-vector.jpg',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://static.vecteezy.com/system/resources/previews/020/927/146/original/xiaomi-brand-logo-phone-symbol-with-name-white-design-chinese-mobile-illustration-with-orange-background-free-vector.jpg',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Xiaomi{' '}
+                  </Text>
                 </View>
-
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Xiaomi{' '}
-                </Text>
-              </View>
+              </Link>
             </View>
           </View>
 
@@ -187,98 +234,135 @@ const CategoriesTabs = () => {
                 paddingHorizontal: 10,
                 display: 'flex',
                 flexDirection: 'row',
+                justifyContent: 'space-between',
               }}>
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://static.vecteezy.com/system/resources/previews/020/927/440/original/motorola-brand-logo-phone-symbol-with-name-white-design-usa-mobile-illustration-with-black-background-free-vector.jpg',
-                    }}
-                  />
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Motorola',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://static.vecteezy.com/system/resources/previews/020/927/440/original/motorola-brand-logo-phone-symbol-with-name-white-design-usa-mobile-illustration-with-black-background-free-vector.jpg',
+                      }}
+                    />
+                  </View>
+
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Motorolla{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Motorolla{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Vivo',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://economictimes.indiatimes.com/thumb/height-450,width-600,imgsize-29606,msid-75741298/vivo-agencies.jpg?from=mdr',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://economictimes.indiatimes.com/thumb/height-450,width-600,imgsize-29606,msid-75741298/vivo-agencies.jpg?from=mdr',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Vivo{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Vivo{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Lg',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://img.freepik.com/premium-vector/swoosh-letter-lg-logo-design-business-company-identity-water-wave-lg-logo-with-modern-trendy_754537-786.jpg?w=2000',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://img.freepik.com/premium-vector/swoosh-letter-lg-logo-design-business-company-identity-water-wave-lg-logo-with-modern-trendy_754537-786.jpg?w=2000',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    LG{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  LG{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Micromax',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://1000logos.net/wp-content/uploads/2019/12/Micromax-Logo.jpg',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://1000logos.net/wp-content/uploads/2019/12/Micromax-Logo.jpg',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Micromax{' '}
+                  </Text>
                 </View>
-
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  MicroMax{' '}
-                </Text>
-              </View>
+              </Link>
             </View>
           </View>
 
@@ -288,98 +372,135 @@ const CategoriesTabs = () => {
                 paddingHorizontal: 10,
                 display: 'flex',
                 flexDirection: 'row',
+                justifyContent: 'space-between',
               }}>
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://static.vecteezy.com/system/resources/previews/020/336/272/original/jio-logo-jio-icon-free-free-vector.jpg',
-                    }}
-                  />
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Jio',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://static.vecteezy.com/system/resources/previews/020/336/272/original/jio-logo-jio-icon-free-free-vector.jpg',
+                      }}
+                    />
+                  </View>
+
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Jio Phone{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Jio Phone{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Blackberry',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Blackberry-logo-vector_c%C3%B3pia.jpg',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Blackberry-logo-vector_c%C3%B3pia.jpg',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Black Berry{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Black Berry{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Oneplus',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://assets.mspimages.in/gear/wp-content/uploads/2020/03/OnePlus-New-Logo.jpg',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://assets.mspimages.in/gear/wp-content/uploads/2020/03/OnePlus-New-Logo.jpg',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    One Plus{' '}
+                  </Text>
                 </View>
+              </Link>
 
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  One Plus{' '}
-                </Text>
-              </View>
+              <Link
+                to={{
+                  screen: 'ProductsFilterScreen',
+                  params: {
+                    category: 'Mobiles',
+                    subCategory: 'Oppo',
+                  },
+                }}>
+                <View style={{paddingVertical: 20, width: '25%'}}>
+                  <View style={styles.imageBox}>
+                    <Image
+                      style={styles.CatImage}
+                      resizeMode="contain"
+                      source={{
+                        uri: 'https://wallpaperaccess.com/full/4392106.jpg',
+                      }}
+                    />
+                  </View>
 
-              <View style={{paddingVertical: 20, width: '25%'}}>
-                <View style={styles.imageBox}>
-                  <Image
-                    style={styles.CatImage}
-                    resizeMode="contain"
-                    source={{
-                      uri: 'https://wallpaperaccess.com/full/4392106.jpg',
-                    }}
-                  />
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      marginTop: 5,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    Oppo{' '}
+                  </Text>
                 </View>
-
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 15,
-                    marginTop: 5,
-                    textAlign: 'center',
-                  }}>
-                  {' '}
-                  Oppo{' '}
-                </Text>
-              </View>
+              </Link>
             </View>
           </View>
         </View>
@@ -388,35 +509,35 @@ const CategoriesTabs = () => {
 
         {/* <View style={{}} >
 
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <View>
-              <Text style={{ paddingLeft: 10, textAlign: 'center', fontSize: 20, color: 'black' }}>Trending Stores</Text>
-            </View>
-            <View style={{ marginLeft: 20, flex: 1, height: 1, backgroundColor: '#ddd'}} />
-          </View>
-
-    
-          <View style={{width: windowWidth ,  paddingHorizontal: 10 }} > 
-
-         
-            <View style={{ width: '50%' , borderRadius: 20 }} >
-
-              <ImageBackground
-              style={{ height : 200 , paddingHorizontal: 10,  paddingTop: 5  }}
-              source={{uri : "https://miro.medium.com/v2/resize:fit:1400/1*ufVo932TWZyk5ZYFp7ukcw.jpeg"}}
-              >
-
-              <Text style={{ fontSize: 20, color: 'black' ,  fontWeight: '600' }} >Flipkart Green  <Entypo  style={{  textAlign: 'center' }}  name="chevron-small-right" size={20} color = "black" />  </Text>
-              <Text style={{ fontSize: 15, color: 'black' ,  fontWeight: '300' }}  >The Sustainable Store </Text>
-
-              </ImageBackground>
-             
-            </View>
-
-          </View>
+<View style={{flexDirection: 'row', alignItems: 'center'}}>
+<View>
+<Text style={{ paddingLeft: 10, textAlign: 'center', fontSize: 20, color: 'black' }}>Trending Stores</Text>
+</View>
+<View style={{ marginLeft: 20, flex: 1, height: 1, backgroundColor: '#ddd'}} />
+</View>
 
 
-        </View> */}
+<View style={{width: windowWidth ,  paddingHorizontal: 10 }} > 
+
+
+<View style={{ width: '50%' , borderRadius: 20 }} >
+
+<ImageBackground
+style={{ height : 200 , paddingHorizontal: 10,  paddingTop: 5  }}
+source={{uri : "https://miro.medium.com/v2/resize:fit:1400/1*ufVo932TWZyk5ZYFp7ukcw.jpeg"}}
+>
+
+<Text style={{ fontSize: 20, color: 'black' ,  fontWeight: '600' }} >Flipkart Green  <Entypo  style={{  textAlign: 'center' }}  name="chevron-small-right" size={20} color = "black" />  </Text>
+<Text style={{ fontSize: 15, color: 'black' ,  fontWeight: '300' }}  >The Sustainable Store </Text>
+
+</ImageBackground>
+
+</View>
+
+</View>
+
+
+</View> */}
 
         {/* Recently Viewed Stores */}
 

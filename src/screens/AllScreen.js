@@ -57,13 +57,84 @@ const AllScreen = ({navigation}) => {
                 <Foundation name="page" size={30} color="#2448bf" />
 
                 <Text
+                  onPress={() => navigation.navigate('Splash')}
                   style={{
                     color: '#4A4A4A',
                     fontWeight: '500',
                     fontSize: 20,
                     marginLeft: 10,
                   }}>
-                  Sign In Page
+                  Splash Screen
+                </Text>
+              </View>
+            </View>
+
+            <Text onPress={() => navigation.navigate('Splash')}>
+              <Entypo name="chevron-small-right" size={30} color="black" />
+            </Text>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              alignItems: 'baseline',
+            }}>
+            <View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                }}>
+                <Foundation name="page" size={30} color="#2448bf" />
+
+                <Text
+                  onPress={() => navigation.navigate('Language')}
+                  style={{
+                    color: '#4A4A4A',
+                    fontWeight: '500',
+                    fontSize: 20,
+                    marginLeft: 10,
+                  }}>
+                  Language Screen
+                </Text>
+              </View>
+            </View>
+
+            <Text onPress={() => navigation.navigate('Language')}>
+              <Entypo name="chevron-small-right" size={30} color="black" />
+            </Text>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              alignItems: 'baseline',
+            }}>
+            <View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                }}>
+                <Foundation name="page" size={30} color="#2448bf" />
+
+                <Text
+                  onPress={() => navigation.navigate('Login')}
+                  style={{
+                    color: '#4A4A4A',
+                    fontWeight: '500',
+                    fontSize: 20,
+                    marginLeft: 10,
+                  }}>
+                  Sign In Screen
                 </Text>
               </View>
             </View>
@@ -71,6 +142,41 @@ const AllScreen = ({navigation}) => {
             {/* <View > <View>  <FontAwesome name="language" size={20} color="blue" />  </View>   <Text style={{ color: "#4A4A4A" ,  fontWeight: '500'   }} > Log In to get exclusive offers </Text> </View> */}
 
             <Text onPress={() => navigation.navigate('Login')}>
+              <Entypo name="chevron-small-right" size={30} color="black" />
+            </Text>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              alignItems: 'baseline',
+            }}>
+            <View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                }}>
+                <Foundation name="page" size={30} color="#2448bf" />
+
+                <Text
+                  onPress={() => navigation.navigate('SignUp')}
+                  style={{
+                    color: '#4A4A4A',
+                    fontWeight: '500',
+                    fontSize: 20,
+                    marginLeft: 10,
+                  }}>
+                  Sign Up Screen
+                </Text>
+              </View>
+            </View>
+
+            <Text onPress={() => navigation.navigate('SignUp')}>
               <Entypo name="chevron-small-right" size={30} color="black" />
             </Text>
           </View>
@@ -105,108 +211,6 @@ const AllScreen = ({navigation}) => {
             </View>
 
             <Text onPress={() => navigation.navigate('ProfileScreen')}>
-              <Entypo name="chevron-small-right" size={30} color="black" />
-            </Text>
-          </View>
-
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-              alignItems: 'baseline',
-            }}>
-            <View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'baseline',
-                }}>
-                <Foundation name="page" size={30} color="#2448bf" />
-
-                <Text
-                  style={{
-                    color: '#4A4A4A',
-                    fontWeight: '500',
-                    fontSize: 20,
-                    marginLeft: 10,
-                  }}>
-                  Products Filter Screen
-                </Text>
-              </View>
-            </View>
-
-            <Text onPress={() => navigation.navigate('ProductsFilterScreen')}>
-              <Entypo name="chevron-small-right" size={30} color="black" />
-            </Text>
-          </View>
-
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-              alignItems: 'baseline',
-            }}>
-            <View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'baseline',
-                }}>
-                <Foundation name="page" size={30} color="#2448bf" />
-
-                <Text
-                  style={{
-                    color: '#4A4A4A',
-                    fontWeight: '500',
-                    fontSize: 20,
-                    marginLeft: 10,
-                  }}>
-                  Product Detail Screen
-                </Text>
-              </View>
-            </View>
-
-            <Text onPress={() => navigation.navigate('ProductDetailScreen')}>
-              <Entypo name="chevron-small-right" size={30} color="black" />
-            </Text>
-          </View>
-
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-              alignItems: 'baseline',
-            }}>
-            <View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'baseline',
-                }}>
-                <Foundation name="page" size={30} color="#2448bf" />
-
-                <Text
-                  style={{
-                    color: '#4A4A4A',
-                    fontWeight: '500',
-                    fontSize: 20,
-                    marginLeft: 10,
-                  }}>
-                  Placed Orders Screen
-                </Text>
-              </View>
-            </View>
-
-            <Text onPress={() => navigation.navigate('OrdersScreen')}>
               <Entypo name="chevron-small-right" size={30} color="black" />
             </Text>
           </View>

@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import React from 'react';
-import { windowWidth } from '../../utils/Dimensions';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import React, {useEffect, useContext, useState} from 'react';
+import {windowWidth} from '../../utils/Dimensions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,18 +19,34 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-import { Button } from 'react-native-paper';
+// import {userLoggedData}  from "../../../App"
 
+import {Button} from 'react-native-paper';
 
-const ProfileScreen = ({ navigation }) => {
+import IsUserLoggedContext from '../../context/isLoggedInContext';
+
+const ProfileScreen = ({navigation}) => {
+  const loggedDataContext = useContext(IsUserLoggedContext);
+
+  useEffect(() => {
+    if (!loggedDataContext.isUserLoggedIn) {
+      navigation.navigate('Login');
+    }
+  }, []);
+
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('userInfo');
+      console.log(' logged out ');
+      navigation.navigate('WelcomeScreen');
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
-
-    <ScrollView showsVerticalScrollIndicator={false} >
-      <View style={{ backgroundColor: '#F1F2F6', width: windowWidth }}>
-
-
-
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={{backgroundColor: '#F1F2F6', width: windowWidth}}>
         <View
           style={{
             backgroundColor: '#fff',
@@ -37,20 +54,15 @@ const ProfileScreen = ({ navigation }) => {
             paddingHorizontal: 20,
             elevation: 3,
           }}>
-
-          <View style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center'
-          }} >
-
-
-
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
             <AntDesign
-
-              onPress={() => navigation.navigate("WelcomeScreen")}
-
-              style={{ marginRight: 10 }}
+              onPress={() => navigation.navigate('WelcomeScreen')}
+              style={{marginRight: 10}}
               name="arrowleft"
               size={30}
               color="#343434"
@@ -62,59 +74,82 @@ const ProfileScreen = ({ navigation }) => {
                 fontSize: 20,
                 fontWeight: '600',
               }}>
-              Hey! Ajay Pratap
+              Hey!{' '}
+              {loggedDataContext.isUserLoggedIn
+                ? loggedDataContext.userInfo.email
+                : ''}
             </Text>
-
-
-
           </View>
 
-
-
-          <View style={[styles.dFlexBetween, { marginTop: 15, justifyContent: 'space-between' }]} >
-
-            <View style={[, styles.dFlex, { borderWidth: 1, paddingHorizontal: 40, borderColor: "#ddd", borderRadius: 5 }]} >
+          <View
+            style={[
+              styles.dFlexBetween,
+              {marginTop: 15, justifyContent: 'space-between'},
+            ]}>
+            <View
+              style={[
+                ,
+                styles.dFlex,
+                {
+                  borderWidth: 1,
+                  paddingHorizontal: 40,
+                  borderColor: '#ddd',
+                  borderRadius: 5,
+                },
+              ]}>
               <Feather name="box" size={25} color="#2448bf" />
-              <Button >
-                Orders
-              </Button>
-
+              <Button>Orders</Button>
             </View>
 
-            <View style={[styles.dFlex, { borderWidth: 1, paddingHorizontal: 40, borderColor: "#ddd", borderRadius: 5 }]} >
+            <View
+              style={[
+                styles.dFlex,
+                {
+                  borderWidth: 1,
+                  paddingHorizontal: 40,
+                  borderColor: '#ddd',
+                  borderRadius: 5,
+                },
+              ]}>
               <AntDesign name="hearto" size={25} color="#2448bf" />
-              <Button >
-                Wishlist
-              </Button>
-
+              <Button>Wishlist</Button>
             </View>
-
           </View>
 
-
-          <View style={[styles.dFlexBetween, { marginVertical: 15, justifyContent: 'space-between' }]} >
-
-            <View style={[, styles.dFlex, { borderWidth: 1, paddingHorizontal: 40, borderColor: "#ddd", borderRadius: 5 }]} >
+          <View
+            style={[
+              styles.dFlexBetween,
+              {marginVertical: 15, justifyContent: 'space-between'},
+            ]}>
+            <View
+              style={[
+                ,
+                styles.dFlex,
+                {
+                  borderWidth: 1,
+                  paddingHorizontal: 40,
+                  borderColor: '#ddd',
+                  borderRadius: 5,
+                },
+              ]}>
               <AntDesign name="gift" size={25} color="#2448bf" />
-              <Button >
-                Orders
-              </Button>
-
+              <Button>Orders</Button>
             </View>
 
-            <View style={[styles.dFlex, { borderWidth: 1, paddingHorizontal: 40, borderColor: "#ddd", borderRadius: 5 }]} >
+            <View
+              style={[
+                styles.dFlex,
+                {
+                  borderWidth: 1,
+                  paddingHorizontal: 40,
+                  borderColor: '#ddd',
+                  borderRadius: 5,
+                },
+              ]}>
               <AntDesign name="customerservice" size={25} color="#2448bf" />
-              <Button >
-                Wishlist
-              </Button>
-
+              <Button>Wishlist</Button>
             </View>
-
           </View>
-
-
-
-
         </View>
 
         <View
@@ -241,7 +276,6 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </View>
 
-
           <View
             style={{
               display: 'flex',
@@ -275,8 +309,6 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </View>
 
-
-
           <View
             style={{
               display: 'flex',
@@ -309,10 +341,6 @@ const ProfileScreen = ({ navigation }) => {
               <Entypo name="chevron-small-right" size={20} color="#2448bf" />
             </Text>
           </View>
-
-
-
-
         </View>
 
         {/*   SECOND SECTION  */}
@@ -401,8 +429,6 @@ const ProfileScreen = ({ navigation }) => {
               <Entypo name="chevron-small-right" size={20} color="black" />
             </Text>
           </View>
-
-
         </View>
 
         {/* thIRD sECTION  */}
@@ -456,11 +482,7 @@ const ProfileScreen = ({ navigation }) => {
               <Entypo name="chevron-small-right" size={20} color="black" />
             </Text>
           </View>
-
-
         </View>
-
-
 
         <View
           style={{
@@ -512,7 +534,6 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </View>
 
-
           <View
             style={{
               display: 'flex',
@@ -545,19 +566,12 @@ const ProfileScreen = ({ navigation }) => {
               <Entypo name="chevron-small-right" size={20} color="black" />
             </Text>
           </View>
-
-
         </View>
-
       </View>
 
-
-
-      <View style={{ margin: 20, paddingHorizontal: 10 }} >
-
-        <View style={{ backgroundColor: "#fff", elevation: 5, }} >
-          <Button style={{ padding: 5 }} >
-
+      <View style={{margin: 20, paddingHorizontal: 10}}>
+        <View style={{backgroundColor: '#fff', elevation: 5}}>
+          <Button style={{padding: 0}} onPress={() => logout()}>
             <Text
               style={{
                 color: '#2448bf',
@@ -569,26 +583,14 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </Button>
         </View>
-
-
-
-
       </View>
-
-
-
     </ScrollView>
-
-
   );
 };
 
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
-
-
-
   rootCss: {
     paddingVertical: 10,
     backgroundColor: '#fff',
@@ -613,8 +615,4 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
-
-
-
-
 });

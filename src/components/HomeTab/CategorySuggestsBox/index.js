@@ -18,6 +18,8 @@ import {
   formatProductName,
 } from '../../../utils/calculateFunctions';
 
+import {Link} from '@react-navigation/native';
+
 const CategorySuggestBox = ({catName, apiData}) => {
   return (
     <>
@@ -63,9 +65,16 @@ const CategorySuggestBox = ({catName, apiData}) => {
               </View>
             </View>
 
-            <Text>
+            <Link
+              to={{
+                screen: 'ProductsFilterScreen',
+                params: {
+                  category: 'Mobiles',
+                  subCategory: `${catName}`,
+                },
+              }}>
               <AntDesign name="rightcircle" size={20} color="#00008B" />
-            </Text>
+            </Link>
           </View>
 
           <View
@@ -133,8 +142,15 @@ const CategorySuggestBox = ({catName, apiData}) => {
                           </Text>
                         </View>
 
-                        <Text
-                          numberOfLines={2}
+                        <Link
+                          to={{
+                            screen: 'ProductDetailScreen',
+                            params: {
+                              category: `${item.subCategoryId.catId.cat_name}`,
+                              subCategory: `${item.subCategoryId.sub_cat_name}`,
+                              productId: `${item.id}`,
+                            },
+                          }}
                           style={{
                             fontSize: 10,
                             color: 'black',
@@ -142,7 +158,7 @@ const CategorySuggestBox = ({catName, apiData}) => {
                             marginTop: 5,
                           }}>
                           {formatProductName(item.name)}
-                        </Text>
+                        </Link>
 
                         <Text
                           style={{

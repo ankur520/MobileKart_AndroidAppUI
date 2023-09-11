@@ -7,8 +7,8 @@ import {
   FlatList,
   Button,
 } from 'react-native';
-import React, { useEffect } from 'react';
-import { windowWidth } from '../../utils/Dimensions';
+import React, {useEffect, useContext, useState} from 'react';
+import {windowWidth} from '../../utils/Dimensions';
 
 // icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -26,10 +26,15 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllProducts } from '../../Redux/slice/AllProductsSlice';
+// redux
+import {useSelector, useDispatch} from 'react-redux';
+import {filterProductsApiAsync} from '../../Redux/slice/FilterProductSlice';
+import {fetchAllProducts} from '../../Redux/slice/AllProductsSlice';
+import {fetchCartByUserIdAsync} from '../../Redux/slice/CartSlice';
 
 import ProductFilterScreenDouble from '../../components/Products Filter Screen/ProductFilterScreenDouble';
+
+import IsUserLoggedContext from '../../context/isLoggedInContext';
 
 import {
   calculateDelivery,
@@ -39,24 +44,64 @@ import {
 
 import ProductFilterScreenSingle from '../../components/Products Filter Screen/ProductFilterScreenSingle';
 
-const ProductsFilterScreen = ({ navigation }) => {
+const ProductsFilterScreen = ({navigation, route}) => {
+  const getProductsFromRedux = useSelector(state => state.filterProduct);
 
-  const dispatch = useDispatch()
+  const getAllProductsFromRedux = useSelector(state => state.allProducts);
 
-  const counter = useSelector(state => state.counter);
+  const getCartFromRedux = useSelector(state => state.carts);
 
-  const getProductsFromRedux = useSelector(state => state.allProducts);
+  const loggedDataContext = useContext(IsUserLoggedContext);
 
-  // console.log("counter - " , counter )
-  // console.log("allProducts - ", getProductsFromRedux)
+  // console.log( typeof( getCartFromRedux.data.cartFullArray )   )
+  // const loggedUserCartLength = Object.keys(getCartFromRedux.data.cartFullArray).length
+  const [loggedUserCartLength, setloggedUserCartLength] = useState(0);
+  // console.log( getCartFromRedux )
+
+  const dispatch = useDispatch();
+
+  const {category, subCategory, filterAllProductsAtOnce} = route.params;
+
+  const fetchCartByUserIdForLoggedUser = () => {
+    if (loggedDataContext.isUserLoggedIn) {
+      // console.log(loggedDataContext.userInfo.id)
+
+      dispatch(fetchCartByUserIdAsync(loggedDataContext.userInfo.id));
+
+      const findLengthOfCartData = Object.keys(getCartFromRedux.data).length;
+
+      if (
+        getCartFromRedux.data.cartFullArray !== undefined &&
+        findLengthOfCartData > 0
+      ) {
+        setloggedUserCartLength(
+          Object.keys(getCartFromRedux.data.cartFullArray).length,
+        );
+      }
+    }
+  };
 
   useEffect(() => {
-    dispatch(fetchAllProducts());
+    if (filterAllProductsAtOnce) {
+      // console.log("all products ")
+      dispatch(fetchAllProducts());
+    } else {
+      let postData = `${category}-${subCategory}`;
+      // console.log("Sub cat ")
+      dispatch(filterProductsApiAsync(postData));
+    }
+
+    if (loggedDataContext.isUserLoggedIn) {
+      // console.log(loggedDataContext.userInfo.id)
+      dispatch(fetchCartByUserIdAsync(loggedDataContext.userInfo.id));
+    }
+
+    fetchCartByUserIdForLoggedUser();
   }, []);
 
   return (
     <>
-      <View style={{ width: windowWidth, backgroundColor: '#fff' }}>
+      <View style={{width: windowWidth, backgroundColor: '#fff'}}>
         {/* HEADER  */}
         <View
           style={{
@@ -76,8 +121,8 @@ const ProductsFilterScreen = ({ navigation }) => {
               alignItems: 'center',
             }}>
             <AntDesign
-              onPress={() => navigation.navigate('WelcomeScreen')}
-              style={{ marginRight: 10 }}
+              onPress={() => navigation.goBack()}
+              style={{marginRight: 10}}
               name="arrowleft"
               size={30}
               color="#343434"
@@ -88,7 +133,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                 color: '#343434',
                 fontSize: 20,
               }}>
-              Mobiles
+              {subCategory} {filterAllProductsAtOnce ? 'All Products' : ''}
             </Text>
           </View>
 
@@ -99,32 +144,50 @@ const ProductsFilterScreen = ({ navigation }) => {
               alignItems: 'center',
             }}>
             <Fontisto
-              style={{ marginRight: 10 }}
+              style={{marginRight: 10}}
               name="search"
               size={20}
               color="#343434"
             />
 
             <MaterialIcons
-              style={{ marginRight: 10 }}
+              style={{marginRight: 10}}
               name="keyboard-voice"
               size={25}
               color="#343434"
             />
 
             <Ionicons
-              style={{ marginRight: 10 }}
+              style={{marginRight: 10}}
               name="camera-outline"
               size={25}
               color="#343434"
             />
 
-            <AntDesign
-              // style={{marginRight: 10}}
-              name="shoppingcart"
-              size={25}
-              color="#343434"
-            />
+            <View style={{position: 'relative', marginRight: 10}}>
+              <AntDesign
+                onPress={() => navigation.navigate('CartTab')}
+                name="shoppingcart"
+                size={25}
+                color="#343434"
+              />
+              <Text
+                style={{
+                  backgroundColor: 'blue',
+                  color: '#fff',
+                  borderRadius: 30,
+                  textAlign: 'center',
+                  width: 20,
+                  height: 20,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  position: 'absolute',
+                  right: -15,
+                  top: -10,
+                }}>
+                {loggedUserCartLength}
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -142,7 +205,7 @@ const ProductsFilterScreen = ({ navigation }) => {
           }}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={[styles.dFlexBetween, styles.filterBtn]}>
-              <Text style={{ fontSize: 13, color: '#343434', fontWeight: '500' }}>
+              <Text style={{fontSize: 13, color: '#343434', fontWeight: '500'}}>
                 Sort By{' '}
               </Text>
               <Text>
@@ -193,7 +256,7 @@ const ProductsFilterScreen = ({ navigation }) => {
             </View>
 
             <View style={[styles.dFlexBetween, styles.filterBtn]}>
-              <Text style={{ fontSize: 13, color: '#343434', fontWeight: '500' }}>
+              <Text style={{fontSize: 13, color: '#343434', fontWeight: '500'}}>
                 Brand{' '}
               </Text>
               <Text>
@@ -207,7 +270,7 @@ const ProductsFilterScreen = ({ navigation }) => {
             </View>
 
             <View style={[styles.dFlexBetween, styles.filterBtn]}>
-              <Text style={{ fontSize: 13, color: '#343434', fontWeight: '500' }}>
+              <Text style={{fontSize: 13, color: '#343434', fontWeight: '500'}}>
                 Brand{' '}
               </Text>
               <Text>
@@ -263,8 +326,8 @@ const ProductsFilterScreen = ({ navigation }) => {
           </ScrollView>
         </View>
 
-        <ScrollView>
-          {/* Feature Specific */}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* HEADER Feature Specific */}
 
           <View
             style={{
@@ -281,7 +344,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                 style={[
                   styles.dFlexBetween,
                   styles.filterBtn,
-                  { borderRadius: 10 },
+                  {borderRadius: 10},
                 ]}>
                 <Text>
                   <MaterialCommunityIcons
@@ -298,11 +361,11 @@ const ProductsFilterScreen = ({ navigation }) => {
                     marginLeft: 5,
                   }}>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     15,200{' '}
                   </Text>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     - 20,999{' '}
                   </Text>
                 </View>
@@ -312,7 +375,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                 style={[
                   styles.dFlexBetween,
                   styles.filterBtn,
-                  { borderRadius: 10 },
+                  {borderRadius: 10},
                 ]}>
                 <Text>
                   <MaterialCommunityIcons
@@ -329,7 +392,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                     marginLeft: 5,
                   }}>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     5G{' '}
                   </Text>
                   {/* <Text style={{ fontSize: 10, color: "#343434", fontWeight: '500' }} >- 20,999 </Text> */}
@@ -340,7 +403,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                 style={[
                   styles.dFlexBetween,
                   styles.filterBtn,
-                  { borderRadius: 10 },
+                  {borderRadius: 10},
                 ]}>
                 <Text>
                   <Foundation name="burst-new" size={20} color="#343434" />
@@ -353,7 +416,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                     marginLeft: 5,
                   }}>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     New Arrival{' '}
                   </Text>
                   {/* <Text style={{ fontSize: 10, color: "#343434", fontWeight: '500' }} >- 20,999 </Text> */}
@@ -364,7 +427,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                 style={[
                   styles.dFlexBetween,
                   styles.filterBtn,
-                  { borderRadius: 10 },
+                  {borderRadius: 10},
                 ]}>
                 <Text>
                   <MaterialCommunityIcons
@@ -381,11 +444,11 @@ const ProductsFilterScreen = ({ navigation }) => {
                     marginLeft: 5,
                   }}>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     15,200{' '}
                   </Text>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     - 20,999{' '}
                   </Text>
                 </View>
@@ -395,7 +458,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                 style={[
                   styles.dFlexBetween,
                   styles.filterBtn,
-                  { borderRadius: 10 },
+                  {borderRadius: 10},
                 ]}>
                 <Text>
                   <MaterialCommunityIcons
@@ -412,11 +475,11 @@ const ProductsFilterScreen = ({ navigation }) => {
                     marginLeft: 5,
                   }}>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     15,200{' '}
                   </Text>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     - 20,999{' '}
                   </Text>
                 </View>
@@ -426,7 +489,7 @@ const ProductsFilterScreen = ({ navigation }) => {
                 style={[
                   styles.dFlexBetween,
                   styles.filterBtn,
-                  { borderRadius: 10 },
+                  {borderRadius: 10},
                 ]}>
                 <Text>
                   <MaterialCommunityIcons
@@ -443,11 +506,11 @@ const ProductsFilterScreen = ({ navigation }) => {
                     marginLeft: 5,
                   }}>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     15,200{' '}
                   </Text>
                   <Text
-                    style={{ fontSize: 10, color: '#343434', fontWeight: '500' }}>
+                    style={{fontSize: 10, color: '#343434', fontWeight: '500'}}>
                     - 20,999{' '}
                   </Text>
                 </View>
@@ -455,11 +518,17 @@ const ProductsFilterScreen = ({ navigation }) => {
             </ScrollView>
           </View>
 
-          <ProductFilterScreenSingle apiData={getProductsFromRedux} />
+          {/* ALL FETCHED PRODUCTS  */}
+
+          <ProductFilterScreenSingle
+            apiData={
+              filterAllProductsAtOnce
+                ? getAllProductsFromRedux
+                : getProductsFromRedux
+            }
+          />
 
           {/* <ProductFilterScreenDouble /> */}
-
-          <View style={{ height: 125, width: 50 }}></View>
         </ScrollView>
       </View>
     </>

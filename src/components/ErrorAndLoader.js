@@ -8,8 +8,8 @@ const ErrorAndLoading = ({isError, isLoader}) => {
       {isError ? (
         <Text
           style={{
-            fontSize: 15,
-            color: 'black',
+            fontSize: 10,
+            color: 'red',
             fontWeight: '500',
           }}>
           {isError ? 'Something Went Wrong' : ''}

@@ -8,7 +8,7 @@ import {
   Image,
   ImageBackground,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {ScrollView} from 'react-native-gesture-handler';
 
 // icons
@@ -31,28 +31,24 @@ import CategoryCarousel from '../../components/HomeTab/CategoryCarousel';
 
 // redux
 
-import { useSelector, useDispatch } from "react-redux";
-import { fetchAllProducts } from '../../Redux/slice/AllProductsSlice';
+import {useSelector, useDispatch} from 'react-redux';
+import {fetchAllProducts} from '../../Redux/slice/AllProductsSlice';
 
-const HomeTab = (props) => {
-
+const HomeTab = props => {
   const dispatch = useDispatch();
 
-  const counter = useSelector( state => state.counter )
+  const counter = useSelector(state => state.counter);
 
-  const getProductsFromRedux = useSelector( state => state.allProducts )
+  const getProductsFromRedux = useSelector(state => state.allProducts);
 
-// console.log("counter - " , counter )
+  // console.log("counter - " , counter )
   // console.log("allProducts - ",  getProductsFromRedux)
 
   useEffect(() => {
-    
-    dispatch( fetchAllProducts() )
-
-  }, [])
+    dispatch(fetchAllProducts());
+  }, []);
 
   // console.log("props -" , props)
-  
 
   return (
     <>
@@ -158,19 +154,21 @@ const HomeTab = (props) => {
             </View>
           </View>
 
-          <SuggestedForYou apiData={getProductsFromRedux} navigation={props.navigation} />
+          <SuggestedForYou
+            apiData={getProductsFromRedux}
+            navigation={props.navigation}
+          />
 
           <CategoryLatest catName="Apple" />
 
           <CategorySuggestBox catName="Apple" apiData={getProductsFromRedux} />
 
           <CategorySuggestBox catName="Nokia" apiData={getProductsFromRedux} />
-          
+
           <CategorySuggestBox
             catName="Samsung"
             apiData={getProductsFromRedux}
-          /> 
-
+          />
         </View>
       </ScrollView>
     </>

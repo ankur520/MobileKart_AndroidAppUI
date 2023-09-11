@@ -1,30 +1,40 @@
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import {StyleSheet, Text, View, Image, FlatList} from 'react-native';
 import React from 'react';
 
-import { CatImagesArray } from '../../../utils/imagesArray';
+import {CatImagesArray} from '../../../utils/imagesArray';
+import {Link} from '@react-navigation/native';
 
 const categoryCarousel = () => {
   return (
     <FlatList
       data={CatImagesArray}
-      renderItem={({ item }) => (
+      renderItem={({item}) => (
         <>
-          <View style={styles.boxRoot}>
-            <View style={styles.imageBox}>
-              <Image style={styles.CatImage} source={{ uri: item.image }} />
-            </View>
+          <Link
+            to={{
+              screen: 'ProductsFilterScreen',
+              params: {
+                category: `${item.catName}`,
+                subCategory: `${item.subCatName}`,
+              },
+            }}>
+            <View style={styles.boxRoot}>
+              <View style={styles.imageBox}>
+                <Image style={styles.CatImage} source={{uri: item.image}} />
+              </View>
 
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 15,
-                marginTop: 5,
-                textAlign: 'center',
-              }}>
-              {' '}
-              {item.name}{' '}
-            </Text>
-          </View>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 15,
+                  marginTop: 5,
+                  textAlign: 'center',
+                }}>
+                {' '}
+                {item.subCatName}{' '}
+              </Text>
+            </View>
+          </Link>
         </>
       )}
       horizontal

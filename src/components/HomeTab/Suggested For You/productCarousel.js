@@ -23,8 +23,9 @@ import {
 
 // Utils imports
 import {windowWidth, windowHeight} from '../../../utils/Dimensions';
+import {Link} from '@react-navigation/native';
 
-const productCarousel = ({apiData}) => {
+const productCarousel = ({apiData, navigation}) => {
   // console.log( "productCarousel ",  apiData.data.getAllProducts  );
   // console.log(apiData.isLoader);
   // console.log(apiData.isError);
@@ -78,7 +79,15 @@ const productCarousel = ({apiData}) => {
                       </Text>
                     </View>
 
-                    <Text
+                    <Link
+                      to={{
+                        screen: 'ProductDetailScreen',
+                        params: {
+                          category: `${item.subCategoryId.catId.cat_name}`,
+                          subCategory: `${item.subCategoryId.sub_cat_name}`,
+                          productId: `${item.id}`,
+                        },
+                      }}
                       numberOfLines={2}
                       style={{
                         fontSize: 10,
@@ -87,7 +96,7 @@ const productCarousel = ({apiData}) => {
                         marginTop: 5,
                       }}>
                       {item.name.substring(0, 25) + '...'}
-                    </Text>
+                    </Link>
 
                     <Text
                       style={{

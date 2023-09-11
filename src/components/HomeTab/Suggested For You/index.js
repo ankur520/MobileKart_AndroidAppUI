@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import React from 'react';
 
+import {Link} from '@react-navigation/native';
+
 // icons
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -67,10 +69,16 @@ const SuggestedForYou = ({apiData, navigation}) => {
               </View>
             </View>
 
-            <Text onPress={() => navigation.navigate('ProductsFilterScreen')}>
+            <Link
+              to={{
+                screen: 'ProductsFilterScreen',
+                params: {
+                  filterAllProductsAtOnce: true,
+                },
+              }}>
               {' '}
               <AntDesign name="rightcircle" size={20} color="#00008B" />{' '}
-            </Text>
+            </Link>
           </View>
 
           <Text
@@ -81,8 +89,8 @@ const SuggestedForYou = ({apiData, navigation}) => {
             }}>
             {apiData.isError ? 'Something Went Wrong' : ''}
           </Text>
-          <ProductCarousel apiData={apiData} />
-          <ProductCarousel apiData={apiData} />
+          <ProductCarousel apiData={apiData} navigation={navigation} />
+          <ProductCarousel apiData={apiData} navigation={navigation} />
         </View>
       </View>
     </>

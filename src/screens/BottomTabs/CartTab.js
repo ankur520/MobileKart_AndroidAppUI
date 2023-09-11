@@ -1,6 +1,6 @@
-import {StyleSheet, Text, View, Image, FlatList} from 'react-native';
+import {StyleSheet, Text, View, Image, FlatList, Alert} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {windowWidth} from '../../utils/Dimensions';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
@@ -24,62 +24,212 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import CartProduct from '../../components/CartTab/CartProducts';
 import ProductCarousel from '../../components/CartTab/ProductCarousel';
 
-import {useSelector, useDispatch } from "react-redux"
+import {useSelector, useDispatch} from 'react-redux';
 
-import {fetchCartByUserId} from "../../Redux/slice/CartSlice"
+import {fetchCartByUserIdAsync} from '../../Redux/slice/CartSlice';
+import {fetchAllProducts} from '../../Redux/slice/AllProductsSlice';
 
-import { backendApis } from '../../utils/APIS';
+import IsUserLoggedContext from '../../context/isLoggedInContext';
 
+import {calculatePrice} from '../../utils/calculateFunctions';
+import BottomPopUp from '../../components/CartTab/BottomPopUp';
+import {allAddressAsync} from '../../Redux/slice/AllUserAddressSlice';
+import {placeOrderAsync} from '../../Redux/slice/PlaceOrderSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {logout} from '../../Redux/slice/UserLoginSlice';
 
+const CartTabs = ({navigation}) => {
+  let totalAmount = 0;
+  let totalCartTax = 0;
+  let totalShippingCharge = 0;
+  let totalItems = 0;
+  let totalAmountByLength = 0;
+  let totalCartSaving = 0;
 
-const CartTabs = () => {
+  const [addressId, setaddressId] = useState();
+  const [placeOrderBtn, setplaceOrderBtn] = useState(false);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const userLoggedRedux = useSelector(state => state.userLogin);
+  const loginContext = useContext(IsUserLoggedContext);
+  const getCartFromRedux = useSelector(state => state.carts);
+  const getCartFromReduxData = useSelector(state => state.carts.data);
+  const getProductsFromRedux = useSelector(state => state.allProducts);
+  const getAddressFromRedux = useSelector(state => state.allUserAddress);
 
-  const getCartFromRedux = useSelector( state => state.carts )
+  const calculateCartPricing = () => {
+    // console.log("sdsfsd ---> " , getCartFromReduxData )
 
-  // console.log(getCartFromRedux.data.cartFullArray)
+    try {
+      let calculationCondition =
+        Object.keys(getCartFromReduxData).length > 0 ? true : false;
+      // console.log(calculationCondition)
+
+      if (calculationCondition) {
+        // console.log( "--> ",  typeof(getCartFromReduxData.cartFullArray)  , Object.keys(getCartFromReduxData.cartFullArray)  )
+
+        if (getCartFromReduxData.cartFullArray != undefined) {
+          totalItems = Object.keys(getCartFromReduxData.cartFullArray).length;
+
+          getCartFromReduxData.cartFullArray.map(item => {
+            let productPrice = calculatePrice(
+              item.productId.mrp,
+              item.productId.discountPercent,
+            );
+
+            let calculateTotal = item.qty * productPrice;
+
+            // calculate amount after discount
+            let finalAmountAfterDiscount =
+              item.productId.mrp -
+              parseInt(
+                (item.productId.mrp * item.productId.discountPercent) / 100,
+              );
+            // calculate tax for each product on amount
+            let TaxesCharges =
+              ((finalAmountAfterDiscount *
+                Number(item.productId.taxClass.slice(0, 3))) /
+                100) *
+              item.qty;
+
+            // accumulate
+            totalCartTax += TaxesCharges;
+            totalCartSaving += item.productId.mrp - productPrice;
+            totalAmountByLength += calculateTotal;
+            totalShippingCharge += item.productId.shippingAmount;
+            totalAmount += calculateTotal + totalShippingCharge + totalCartTax;
+          });
+        }
+      }
+    } catch (error) {
+      console.log('Error Catch - ', error);
+    }
+  };
+
+  calculateCartPricing();
+
+  const alert = msg => {
+    Alert.alert(msg);
+  };
+
+  const navigate = msg => {
+    navigation.navigate(msg);
+  };
+
+  const placeOrderSubmitBtn = () => {
+    console.log('btn cliced ');
+
+    if (addressId === undefined) {
+      Alert.alert('Please Select Your Delivery Address');
+    } else {
+      if (
+        getCartFromReduxData.cartFullArray !== undefined &&
+        Object.keys(getCartFromReduxData.cartFullArray).length > 0
+      ) {
+        console.log('Eligible to place Order');
+
+        let userId = loginContext.userInfo.id;
+        let checkoutAmount = totalAmount;
+
+        // console.log( userId,  checkoutAmount , addressId )
+
+        dispatch(
+          placeOrderAsync({
+            userId: userId,
+            checkoutAmount: checkoutAmount,
+            addressId: addressId,
+            alert: alert,
+            navigate: navigate,
+          }),
+        );
+      }
+    }
+  };
 
   useEffect(() => {
-    
-    dispatch( fetchCartByUserId() )
-
-  }, [])
-  
-
-  // console.log(backendApis.userApi.fetch_cart_byUserIdByUserId+"1/")
+    // console.log("effect " , loginContext.isUserLoggedIn)
+    if (loginContext.isUserLoggedIn) {
+      // console.log(loginContext.userInfo.id)
+      dispatch(fetchCartByUserIdAsync(loginContext.userInfo.id));
+      dispatch(allAddressAsync(loginContext.userInfo.id));
+    }
+  }, []);
 
   return (
     <View style={{backgroundColor: '#F1F2F6', width: windowWidth}}>
       <View style={styles.rootCss}>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 20,
-            fontWeight: '500',
-          }}>
-          My Cart
-        </Text>
-      </View>
-
-      <ScrollView   showsVerticalScrollIndicator={false}>
-        {/* ADDRESS BOX */}
-        <View style={[styles.dFlexBetween, styles.rootCss]}>
-          <Text style={{color: 'black', fontWeight: '400', fontSize: 15}}>
-            {' '}
-            From Saved Addresses{' '}
+        <View style={[styles.dFlex, {}]}>
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 20,
+              fontWeight: '500',
+            }}>
+            My Cart
           </Text>
 
-          <Button
-            style={{borderWidth: 1, borderColor: '#ddd', borderRadius: 5}}>
-            {' '}
-            Enter Devivery Pincode{' '}
-          </Button>
+          {/* <Text
+
+            onPress={ () => dispatch( logout()  )  }
+
+            style={{
+              color: 'black',
+              fontSize: 20,
+              fontWeight: '500',
+            }}>
+            -------
+          </Text> */}
+
+          <View style={{marginLeft: 30, marginTop: 5}}>
+            <FontAwesome
+              onPress={() =>
+                dispatch(fetchCartByUserIdAsync(loginContext.userInfo.id))
+              }
+              name="refresh"
+              size={20}
+              color="blue"
+            />
+          </View>
         </View>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* ADDRESS BOX */}
+
+        {loginContext.isUserLoggedIn ? (
+          <View style={[styles.dFlexBetween, styles.rootCss]}>
+            <Text style={{color: 'black', fontWeight: '400', fontSize: 15}}>
+              {' '}
+              From Saved Addresses{' '}
+            </Text>
+
+            {/* <Button
+              style={{borderWidth: 1, borderColor: '#ddd', borderRadius: 5}}>
+              {' '}
+              Select Delivery Address{' '}
+            </Button> */}
+
+            <BottomPopUp
+              apiData={getAddressFromRedux}
+              addressId={addressId}
+              setaddressId={setaddressId}
+            />
+          </View>
+        ) : (
+          <View style={[styles.dFlexBetween, styles.rootCss]}>
+            <Text style={{color: 'black', fontWeight: '600', fontSize: 15}}>
+              {' '}
+              Please Login
+            </Text>
+          </View>
+        )}
 
         {/* Cart ITEM */}
 
-        <CartProduct apiData={getCartFromRedux} />
+        <CartProduct
+          apiData={getCartFromRedux}
+          userId={loginContext.isUserLoggedIn ? loginContext.userInfo.id : ''}
+        />
 
         {/* Cart ITEM */}
 
@@ -98,28 +248,28 @@ const CartTabs = () => {
 
           <View style={[styles.dFlexBetween, {paddingVertical: 5}]}>
             <Text style={{color: 'black', fontWeight: '400', fontSize: 13}}>
-              Price (1 item)
+              Total Price ( {totalItems} item)
             </Text>
             <Text style={{color: 'black', fontWeight: '400'}}>
-              &#8377;1,07,997{' '}
+              &#8377;{totalAmountByLength}
             </Text>
           </View>
 
           <View
             style={[styles.dFlexBetween, {paddingVertical: 5, fontSize: 13}]}>
-            <Text style={{color: 'black', fontWeight: '400'}}>Discount </Text>
+            <Text style={{color: 'black', fontWeight: '400'}}>Total Tax </Text>
             <Text style={{color: '#228b22', fontWeight: '400'}}>
-              &#8377;-12,000{' '}
+              &#8377;{totalCartTax}
             </Text>
           </View>
 
           <View
             style={[styles.dFlexBetween, {paddingVertical: 5, fontSize: 13}]}>
             <Text style={{color: 'black', fontWeight: '400'}}>
-              Delivery Charges{' '}
+              Total Delivery Charges{' '}
             </Text>
             <Text style={{color: '#228b22', fontWeight: '400'}}>
-              Free Delivery{' '}
+              Free Delivery &#8377;{totalShippingCharge}
             </Text>
           </View>
 
@@ -128,10 +278,10 @@ const CartTabs = () => {
           <View
             style={[styles.dFlexBetween, {paddingVertical: 15, fontSize: 13}]}>
             <Text style={{color: 'black', fontWeight: '600', fontSize: 15}}>
-              Total Amount{' '}
+              Total Cart Amount{' '}
             </Text>
             <Text style={{color: 'black', fontWeight: '600', fontSize: 15}}>
-              &#8377;89,080{' '}
+              &#8377; {totalAmount}
             </Text>
           </View>
 
@@ -144,7 +294,7 @@ const CartTabs = () => {
               fontSize: 15,
               marginTop: 10,
             }}>
-            You will save &#8377;18,000 on this order
+            You will save &#8377;{totalCartSaving} on this order
           </Text>
         </View>
 
@@ -164,8 +314,10 @@ const CartTabs = () => {
           </Text>
 
           {/* PRODUCTS SLIDER */}
-          <ProductCarousel apiData={getCartFromRedux}  />
-          
+          <ProductCarousel
+            apiData={getProductsFromRedux}
+            userId={loginContext.isUserLoggedIn ? loginContext.userInfo.id : ''}
+          />
         </View>
 
         {/* Footer AREA */}
@@ -214,17 +366,18 @@ const CartTabs = () => {
                 textDecorationLine: 'line-through',
                 textDecorationColor: '#5e5c5c',
               }}>
-              {' '}
-              &#8377;35,999{' '}
+              {/* &#8377;35,999{' '} */}
             </Text>
             <Text style={{fontSize: 18, color: 'black', fontWeight: '600'}}>
               {' '}
-              &#8377;35,999{' '}
+              &#8377;{totalAmount}
             </Text>
           </View>
 
           <View>
             <Button
+              disabled={placeOrderBtn}
+              onPress={() => placeOrderSubmitBtn()}
               style={{
                 borderWidth: 1,
                 borderColor: '#ddd',
@@ -232,9 +385,8 @@ const CartTabs = () => {
                 backgroundColor: 'orange',
                 paddingHorizontal: 35,
               }}>
-              <Text style={{fontSize: 15, color: 'black', fontWeight: '500'}}>
-                {' '}
-                Place Order{' '}
+              <Text style={{fontSize: 15, color: 'black', fontWeight: '700'}}>
+                Place Order
               </Text>
             </Button>
           </View>

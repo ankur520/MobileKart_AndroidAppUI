@@ -4,7 +4,7 @@ import React, {useCallback, useState} from 'react';
 import {windowWidth, windowHeight} from '../../utils/Dimensions';
 import {productImagesArray} from '../../utils/imagesArray';
 
-const ProductDetailCarousel = () => {
+const ProductDetailCarousel = ({imagesList}) => {
   const [activeIndex, setactiveIndex] = useState(0);
 
   const onFlatlistUpdate = useCallback(({viewableItems}) => {
@@ -22,7 +22,7 @@ const ProductDetailCarousel = () => {
   return (
     <View style={[styles.carousel, {marginTop: -20}]}>
       <FlatList
-        data={productImagesArray}
+        data={imagesList}
         renderItem={({item}) => (
           <Image
             resizeMode="contain"
@@ -43,7 +43,7 @@ const ProductDetailCarousel = () => {
       />
 
       <View style={styles.dots}>
-        {productImagesArray.map((image, index) => (
+        {imagesList.map((image, index) => (
           <View
             key={index}
             style={[

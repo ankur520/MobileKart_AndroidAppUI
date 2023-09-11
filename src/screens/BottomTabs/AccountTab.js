@@ -1,6 +1,7 @@
 import {StyleSheet, Text, View, Button} from 'react-native';
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {windowWidth} from '../../utils/Dimensions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,7 +19,25 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-const AccountTabs = () => {
+import IsUserLoggedContext from '../../context/isLoggedInContext';
+import Card from '../../components/AccountTab/Card';
+
+const AccountTabs = ({navigation}) => {
+  const loggedDataContext = useContext(IsUserLoggedContext);
+
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('userInfo');
+      console.log(' logged out ');
+      navigation.navigate('HomeTab');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    // logout();
+  }, []);
   return (
     <View style={{backgroundColor: '#F1F2F6', width: windowWidth}}>
       <View
@@ -59,195 +78,172 @@ const AccountTabs = () => {
                   marginLeft: 10,
                   fontSize: 15,
                 }}>
-                Log In to get exclusive offers
+                {loggedDataContext.isUserLoggedIn
+                  ? loggedDataContext.userInfo.email
+                  : 'Log In to get exclusive offers'}
               </Text>
             </View>
           </View>
 
           <Text style={{color: 'red'}}>
-            <Button title="Log In" color="#2448bf" style={{width: 100}} />
-          </Text>
-        </View>
-      </View>
-
-      <View
-        style={{
-          backgroundColor: '#fff',
-          marginTop: 20,
-          paddingHorizontal: 20,
-          elevation: 3,
-        }}>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 20,
-            paddingVertical: 15,
-            fontWeight: '600',
-          }}>
-          Account Settings
-        </Text>
-
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingVertical: 10,
-            alignItems: 'baseline',
-          }}>
-          <View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'baseline',
-              }}>
-              <FontAwesome name="language" size={20} color="#2448bf" />
-              <Text
-                style={{
-                  color: '#4A4A4A',
-                  fontWeight: '500',
-                  fontSize: 15,
-                  marginLeft: 10,
-                }}>
-                Log In to get exclusive offers
-              </Text>
-            </View>
-          </View>
-
-          {/* <View > <View>  <FontAwesome name="language" size={20} color="blue" />  </View>   <Text style={{ color: "#4A4A4A" ,  fontWeight: '500'   }} > Log In to get exclusive offers </Text> </View> */}
-
-          <Text>
-            <Entypo name="chevron-small-right" size={20} color="black" />
-          </Text>
-        </View>
-
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingVertical: 10,
-            alignItems: 'center',
-          }}>
-          <View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Ionicons
-                name="notifications-outline"
-                size={20}
+            {loggedDataContext.isUserLoggedIn ? (
+              <Button
+                onPress={() => navigation.navigate('ProfileScreen')}
+                title="View Profile"
                 color="#2448bf"
+                style={{width: 100}}
               />
-              <Text
-                style={{
-                  color: '#4A4A4A',
-                  fontWeight: '500',
-                  marginLeft: 10,
-                  fontSize: 15,
-                }}>
-                Notification Settings
-              </Text>
-            </View>
-          </View>
-
-          {/* <View > <View>  <FontAwesome name="language" size={20} color="blue" />  </View>   <Text style={{ color: "#4A4A4A" ,  fontWeight: '500'   }} > Log In to get exclusive offers </Text> </View> */}
-
-          <Text>
-            <Entypo name="chevron-small-right" size={20} color="black" />
-          </Text>
-        </View>
-
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingVertical: 10,
-            alignItems: 'center',
-          }}>
-          <View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <AntDesign name="customerservice" size={20} color="blue" />
-              <Text
-                style={{
-                  color: '#4A4A4A',
-                  fontWeight: '500',
-                  marginLeft: 10,
-                  fontSize: 15,
-                }}>
-                Help Center
-              </Text>
-            </View>
-          </View>
-
-          <Text>
-            <Entypo name="chevron-small-right" size={20} color="#2448bf" />
+            ) : (
+              <Button
+                onPress={() => navigation.navigate('Login')}
+                title="Log In"
+                color="#2448bf"
+                style={{width: 100}}
+              />
+            )}
           </Text>
         </View>
       </View>
 
-      {/*   SECOND SECTION  */}
-
-      <View
-        style={{
-          backgroundColor: '#fff',
-          marginTop: 20,
-          paddingHorizontal: 20,
-          elevation: 3,
-        }}>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 20,
-            paddingVertical: 15,
-            fontWeight: '600',
-          }}>
-          Earn with Flipkart
-        </Text>
-
+      {loggedDataContext.isUserLoggedIn ? (
         <View
           style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingTop: 10,
-            paddingBottom: 20,
-            alignItems: 'baseline',
+            backgroundColor: '#fff',
+            marginTop: 20,
+            paddingHorizontal: 20,
+            elevation: 3,
           }}>
-          <View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'baseline',
-              }}>
-              <FontAwesome5 name="store" size={20} color="#2448bf" />
-              <Text
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 20,
+              paddingVertical: 15,
+              fontWeight: '600',
+            }}>
+            Account Details
+          </Text>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              alignItems: 'baseline',
+            }}>
+            <View>
+              <View
                 style={{
-                  color: '#4A4A4A',
-                  fontWeight: '500',
-                  fontSize: 15,
-                  marginLeft: 10,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
                 }}>
-                Sell On Flipkart
-              </Text>
+                <FontAwesome6
+                  name="heart-circle-plus"
+                  size={20}
+                  color="#2448bf"
+                />
+                <Text
+                  style={{
+                    color: '#4A4A4A',
+                    fontWeight: '500',
+                    fontSize: 15,
+                    marginLeft: 10,
+                  }}
+                  onPress={() => navigation.navigate('WishListScreen')}>
+                  WishList
+                </Text>
+              </View>
             </View>
+            <Text>
+              <Entypo
+                name="chevron-small-right"
+                onPress={() => navigation.navigate('WishListScreen')}
+                size={20}
+                color="black"
+              />
+            </Text>
           </View>
 
-          <Text>
-            <Entypo name="chevron-small-right" size={20} color="black" />
-          </Text>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              alignItems: 'baseline',
+            }}>
+            <View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                }}>
+                <Feather name="box" size={20} color="#2448bf" />
+                <Text
+                  style={{
+                    color: '#4A4A4A',
+                    fontWeight: '500',
+                    fontSize: 15,
+                    marginLeft: 10,
+                  }}
+                  onPress={() => navigation.navigate('OrdersScreen')}>
+                  Orders
+                </Text>
+              </View>
+            </View>
+            <Text>
+              <Entypo
+                onPress={() => navigation.navigate('OrdersScreen')}
+                name="chevron-small-right"
+                size={20}
+                color="black"
+              />
+            </Text>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              alignItems: 'baseline',
+            }}>
+            <View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                }}>
+                <Entypo name="location" size={20} color="#2448bf" />
+                <Text
+                  onPress={() => navigation.navigate('AllAddressScreen')}
+                  style={{
+                    color: '#4A4A4A',
+                    fontWeight: '500',
+                    fontSize: 15,
+                    marginLeft: 10,
+                  }}>
+                  All Addresses
+                </Text>
+              </View>
+            </View>
+            <Text>
+              <Entypo
+                onPress={() => navigation.navigate('AllAddressScreen')}
+                name="chevron-small-right"
+                size={20}
+                color="black"
+              />
+            </Text>
+          </View>
         </View>
-      </View>
+      ) : (
+        ''
+      )}
 
       {/* thIRD sECTION  */}
 
@@ -334,6 +330,53 @@ const AccountTabs = () => {
           </Text>
         </View>
       </View>
+
+      {/* Logout Btn  */}
+      {loggedDataContext.isUserLoggedIn ? (
+        <View
+          style={{
+            backgroundColor: '#fff',
+            marginTop: 20,
+            paddingHorizontal: 20,
+            elevation: 3,
+          }}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              alignItems: 'baseline',
+            }}>
+            <View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                }}>
+                <AntDesign name="copy1" size={20} color="#2448bf" />
+                <Text
+                  onPress={() => logout()}
+                  style={{
+                    color: '#4A4A4A',
+                    fontWeight: '500',
+                    fontSize: 15,
+                    marginLeft: 10,
+                  }}>
+                  Logout
+                </Text>
+              </View>
+            </View>
+
+            <Text onPress={() => logout()}>
+              <Entypo name="chevron-small-right" size={20} color="black" />
+            </Text>
+          </View>
+        </View>
+      ) : (
+        ''
+      )}
     </View>
   );
 };

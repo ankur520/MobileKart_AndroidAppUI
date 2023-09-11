@@ -11,19 +11,18 @@ import ProductDetailScreen from './screens/ProductDetailScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import OrdersScreen from './screens/OrdersScreen';
 
-
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SignUpScreen from './screens/SignUpScreen';
-
+import WishListScreen from './screens/WishListScreen/WishListScreen';
+import AllAddressScreen from './screens/AllAddressScreen/AllAddressScreen';
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   return (
-    <NavigationContainer  >
-      <Stack.Navigator initialRouteName='SignUp'>
-
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
           name="Splash"
           component={Splash}
@@ -56,7 +55,7 @@ const AppNavigator = () => {
 
         <Stack.Screen
           name="SignUp"
-          component={ SignUpScreen }
+          component={SignUpScreen}
           options={{headerShown: false}}
         />
 
@@ -74,6 +73,18 @@ const AppNavigator = () => {
         <Stack.Screen
           name="OrdersScreen"
           component={OrdersScreen}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="WishListScreen"
+          component={WishListScreen}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="AllAddressScreen"
+          component={AllAddressScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
